@@ -4,14 +4,16 @@ from array_to_bst import ArrayToBst, TreeNode
 @pytest.mark.parametrize(
     "nums",
     [
-        ([-10,-3,0,5,9])
+        ([-10,-3,0,5,9]),
+        ([1,3])
     ]
 )
 def test_merge(nums):
     actual = ArrayToBst().sortedArrayToBST(nums)
     final_result = []
-    assert inorder_traversal(actual, final_result) == nums
-    #assert is_balanced(actual) == True
+    inorder_traversal(actual, final_result)
+    assert final_result == nums
+    assert is_balanced(actual) == True
 
 def inorder_traversal(root: TreeNode, result: list[int]):
     if root:
