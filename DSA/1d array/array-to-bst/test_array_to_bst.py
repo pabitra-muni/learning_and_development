@@ -9,7 +9,7 @@ from array_to_bst import ArrayToBst, TreeNode
     ]
 )
 def test_merge(nums):
-    actual = ArrayToBst().sortedArrayToBST(nums)
+    actual = ArrayToBst().sortedArrayToBST_Optimized(nums)
     final_result = []
     inorder_traversal(actual, final_result)
     assert final_result == nums
