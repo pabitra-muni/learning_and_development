@@ -6,13 +6,10 @@ class WaterContainer:
         right = len(heights) - 1
         maxArea = 0
         while left < right:
-            curArea = self.__getArea(heights, left, right)
+            curArea = min(heights[left], heights[right]) * (right - left)
             if curArea > maxArea: maxArea = curArea
             if heights[left] > heights[right]:
                 right -= 1
             else:
                 left += 1
         return maxArea
-
-    def __getArea(self, height: list[int], left: int, right: int) -> int:
-        return min(height[left], height[right]) * (right - left)
