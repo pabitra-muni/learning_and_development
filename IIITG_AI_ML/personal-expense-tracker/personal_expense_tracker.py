@@ -54,6 +54,11 @@ def trackBudget():
         print(f">>>>> You have {budget - totalExpense} left for the month")
     print("#################################")
 
+def reset():
+    existing_expenses_list.clear()
+    new_expenses_list.clear()
+    loadExistingExpenses()
+
 def saveExpenses():
     print("#################################")
     print("Saving all the expenses")
@@ -61,18 +66,15 @@ def saveExpenses():
     with open("expense_tracker.csv", "a") as file:
         for record in new_expenses_list:
             file.write(f"{record['date']},{record['category']},{record['amount']},{record['description']}\n")
-    print("Your new expeses saved successfully")
+    print("Your new expenses saved successfully")
     print("#################################")
     reset()
 
-def reset():
-    existing_expenses_list.clear()
-    new_expenses_list.clear()
-    loadExistingExpenses()
 
 def loadExistingExpenses():
     try:
         with open("expense_tracker.csv", "r") as file:
+            next(file)  # Skip header row
             for line in file:
                 if line.strip():  # Skip empty lines
                     date, category, amount, description = line.strip().split(",")
@@ -85,7 +87,9 @@ def loadExistingExpenses():
                     existing_expenses_list.append(expense)
     except FileNotFoundError:
         # Create the file if it doesn't exist
-        open("expense_tracker.csv", "w").close()
+        with open("expense_tracker.csv", "w") as file:
+            file.write("date,category,amount,description\n")
+        file.close()
 
 def mainMenu():
     loadExistingExpenses()
