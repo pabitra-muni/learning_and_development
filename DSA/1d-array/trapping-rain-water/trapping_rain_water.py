@@ -6,14 +6,16 @@ class RainWaterTrap:
         sumArr = [0] * length
         maxIndex = 0
         lastVal = heights[0]
+        total = 0
         for i in range(1, length):
             if heights[i] > lastVal:
                 minVal = min(heights[i], heights[maxIndex])
                 for j in range(maxIndex, i):
                     posVal =  minVal - heights[j]
-                    if posVal > sumArr[j]: sumArr[j] = posVal
+                    if posVal > sumArr[j]:
+                        total += posVal - sumArr[j]
+                        sumArr[j] = posVal
                 if heights[i] >= heights[maxIndex]: maxIndex = i
 
             lastVal = heights[i]
-        sumArr[0] = sumArr[-1] = 0
-        return sum(sumArr)
+        return total
