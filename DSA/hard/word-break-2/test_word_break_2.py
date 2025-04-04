@@ -15,4 +15,5 @@ from word_break_2 import WordBreak2
 )
 def test_pascal_triangle(s, wordDict, expected):
     actual = WordBreak2().wordBreak(s, wordDict)
+    assert len(actual) == len(expected)
     assert sorted(actual) == sorted(expected)
