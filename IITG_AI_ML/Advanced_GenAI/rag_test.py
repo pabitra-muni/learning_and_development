@@ -18,7 +18,6 @@ pdf_path = os.path.join(os.path.dirname(__file__), "the_nestle_hr_policy_pdf_201
 loader = PyPDFLoader(pdf_path)
 docs = loader.load()
 
-print(type(docs))
 
 splitter = RecursiveCharacterTextSplitter(
     chunk_size=1000,
@@ -26,7 +25,6 @@ splitter = RecursiveCharacterTextSplitter(
     length_function=len
 )
 split_docs = splitter.split_documents(docs)
-print(type(split_docs))
 
 # 1. Create embeddings & vector store (Chroma)
 embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
@@ -36,7 +34,6 @@ vectordb = Chroma.from_documents(
     embedding=embeddings,
     persist_directory="./chroma_store"
 )
-print('>>>>>1')
 retriever = vectordb.as_retriever(search_kwargs={"k": 3})
 
 # 2. Define LLM
@@ -59,26 +56,17 @@ prompt = ChatPromptTemplate.from_template(
 
 # 4. Create document chain
 document_chain = create_stuff_documents_chain(llm, prompt)
-print('>>>>>2')
 # 5. Create retrieval chain
 retrieval_chain = create_retrieval_chain(retriever, document_chain)
-print('>>>>>3')
-# 6. Wrap with RunnableParallel to also expose source docs
-chain_with_sources = RunnableParallel(
-    {
-        "answer": retrieval_chain,
-        "docs": itemgetter("input") | retriever
-    }
-)
 
 # 7. Run query
-response = chain_with_sources.invoke({"input": "tell me about rewards policy"})
+response = retrieval_chain.invoke({"input": "tell me about rewards policy"})
 
 print("\n--- Answer ---")
-print(response["answer"]["answer"])
+print(response["answer"])
 
 print("\n--- Sources ---")
-for i, doc in enumerate(response["docs"], start=1):
+for i, doc in enumerate(response["context"], start=1):
     print(f"Source {i}: {doc.page_content[:200]} ...")
     print("Metadata:", doc.metadata)
 
